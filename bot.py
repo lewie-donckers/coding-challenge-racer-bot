@@ -24,15 +24,34 @@ class Gonzales(Bot):
         # calculate the angle to the target
         angle = target.as_polar()[1]
 
+        next_next_waypoint = next_waypoint + 1
+        if next_next_waypoint >= len(self.track.lines): next_next_waypoint = 0
+        next_target = self.track.lines[next_next_waypoint]
+        next_target = position.inverse() * next_target
+        next_angle = next_target.as_polar()[1]
+
+        go_back = False
+        abs_angle = abs(angle)
+        if abs_angle > 90:
+            go_back = True
+            abs_angle = abs(abs_angle - 180)
+
         # calculate the throttle
-        target_velocity = 200
+        target_velocity = max(100, 300 - (abs_angle * 3))
         if velocity.length() < target_velocity:
             throttle = 1
         else:
             throttle = -1
 
-        # calculate the steering
-        if angle > 0:
-            return throttle, 1
-        else:
-            return throttle, -1
+        steering = 0
+        if abs_angle > 1:
+            if angle > 0:
+                steering = 1
+            else:
+                steering = -1
+
+        if go_back:
+            steering = steering * -1
+            throttle = throttle * -1
+
+        return throttle, steering
