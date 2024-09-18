@@ -6,16 +6,18 @@ from ...bot import Bot
 from ...linear_math import Transform
 
 
-class SimpleBot(Bot):
+class Gonzales(Bot):
+
     @property
     def name(self):
-        return "SimpleBot"
+        return "Gonzales"
 
     @property
     def contributor(self):
-        return "Nobleo"
+        return "Lewie"
 
-    def compute_commands(self, next_waypoint: int, position: Transform, velocity: Vector2) -> Tuple:
+    def compute_commands(self, next_waypoint: int, position: Transform,
+                         velocity: Vector2) -> Tuple:
         target = self.track.lines[next_waypoint]
         # calculate the target in the frame of the robot
         target = position.inverse() * target
@@ -23,7 +25,7 @@ class SimpleBot(Bot):
         angle = target.as_polar()[1]
 
         # calculate the throttle
-        target_velocity = 50
+        target_velocity = 200
         if velocity.length() < target_velocity:
             throttle = 1
         else:

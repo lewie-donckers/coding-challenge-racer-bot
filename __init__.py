@@ -1,3 +1,3 @@
-from .bot import SimpleBot
+from .bot import Gonzales
 
-__all__ = ["SimpleBot"]
+__all__ = ["Gonzales"]
