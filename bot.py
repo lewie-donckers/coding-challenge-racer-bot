@@ -11,6 +11,7 @@ from ...linear_math import Transform
 # IDEAS
 # - more granular throttle
 # - better estimation of max speed
+# - drifting seems suboptimal. perhaps cutting corners is better.
 
 # PHYSICS
 # - steering is 60% effective (rest is drifting)
@@ -22,10 +23,10 @@ from ...linear_math import Transform
 DEBUG = False
 
 # TUNING PARAMETERS
-EFFECTIVE_DECELERATION = -115
-STEER_DISTANCE_LIMIT = 60
-STEER_ANGLE_LIMIT = 24
-SPEED_LIMIT_FACTOR = 110
+EFFECTIVE_DECELERATION = -114
+STEER_DISTANCE_LIMIT = 64
+STEER_ANGLE_LIMIT = 28
+SPEED_LIMIT_FACTOR = 115
 
 
 def normalizeAngle(angle):
@@ -36,8 +37,19 @@ def normalizeAngle(angle):
 
 class Gonzales(Bot):
 
-    def __init__(self, track):
+    def __init__(self,
+                 track,
+                 *,
+                 effective_deceleration=EFFECTIVE_DECELERATION,
+                 steer_distance_limit=STEER_DISTANCE_LIMIT,
+                 steer_angle_limit=STEER_ANGLE_LIMIT,
+                 speed_limit_factor=SPEED_LIMIT_FACTOR):
         super().__init__(track)
+
+        self._effective_deceleration = effective_deceleration
+        self._steer_distance_limit = steer_distance_limit
+        self._steer_angle_limit = steer_angle_limit
+        self._speed_limit_factor = speed_limit_factor
 
         self._track_len = len(self.track.lines)
 
@@ -53,7 +65,8 @@ class Gonzales(Bot):
             for v0, v1 in itertools.pairwise(vectors)
         ]
         self._speed_limits = [
-            SPEED_LIMIT_FACTOR * d / a for a, d in zip(angles, distances)
+            self._speed_limit_factor * d / a
+            for a, d in zip(angles, distances)
         ]
         self._distances = [v.length() for v in vectors]
 
@@ -80,14 +93,14 @@ class Gonzales(Bot):
         throttle = 1
 
         v = velocity.length()
-        mt = -v / EFFECTIVE_DECELERATION
-        md = 0.5 * EFFECTIVE_DECELERATION * mt * mt + v * mt
+        mt = -v / self._effective_deceleration
+        md = 0.5 * self._effective_deceleration * mt * mt + v * mt
 
         d = (pos.p - target).length()
         while md > d:
             tv = self._speed_limits[wp]
-            ts = (tv - v) / EFFECTIVE_DECELERATION
-            td = 0.5 * EFFECTIVE_DECELERATION * ts * ts + v * ts
+            ts = (tv - v) / self._effective_deceleration
+            td = 0.5 * self._effective_deceleration * ts * ts + v * ts
             if td > d:
                 throttle = -1
                 break
@@ -103,7 +116,8 @@ class Gonzales(Bot):
         angle = (posinverse * target).as_polar()[1]
 
         d = (pos.p - target).length()
-        if (d < STEER_DISTANCE_LIMIT) and (abs(angle) < STEER_ANGLE_LIMIT):
+        if (d < self._steer_distance_limit) and (abs(angle) <
+                                                 self._steer_angle_limit):
             target = posinverse * self.track.lines[self._incWP(wp)]
             angle = target.as_polar()[1]
 
