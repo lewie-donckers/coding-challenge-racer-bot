@@ -11,9 +11,6 @@ from ...linear_math import Transform
 # - more granular throttle and steering
 # - better estimation of max speed
 
-# BUGS
-# - if going backwards from target (through skidding) but abs speed is lower than target, it will accelerate backwards
-
 # PHYSICS
 # - steering is 60% effective (rest is drifting)
 # - steering speed = 180 deg/sec
@@ -23,7 +20,7 @@ from ...linear_math import Transform
 
 DEBUG = False
 
-EFFECTIVE_DECELERATION = -125
+EFFECTIVE_DECELERATION = -120
 
 
 def normalizeAngle(angle):
@@ -66,7 +63,7 @@ class Gonzales(Bot):
         return "Lewie"
 
     def draw(self, map_scaled, zoom):
-        if not DEBUG: pass
+        if not DEBUG: return
 
         for i in range(len(self.track.lines)):
             p = self.track.lines[i] * zoom
@@ -82,8 +79,6 @@ class Gonzales(Bot):
 
     def compute_commands(self, next_waypoint: int, position: Transform,
                          velocity: Vector2) -> Tuple:
-        self.last_coordinates = position.p
-        self.last_speed = velocity.length()
 
         target = self.track.lines[next_waypoint]
 
@@ -116,6 +111,9 @@ class Gonzales(Bot):
             else:
                 steering = -1
 
-        self.last_throttle = throttle
+        if DEBUG:
+            self.last_coordinates = position.p
+            self.last_speed = velocity.length()
+            self.last_throttle = throttle
 
         return throttle, steering
