@@ -1,6 +1,8 @@
 from copy import deepcopy
 from typing import Tuple
 import itertools
+import os
+import math
 
 from pygame import Vector2
 import pygame
@@ -20,6 +22,7 @@ from ...linear_math import Transform
 # - sideways (drifting) deceleration = 200 pixels/sec2
 
 DEBUG = False
+DRAW_FLAME = True
 
 # TUNING PARAMETERS
 EFFECTIVE_DECELERATION = -118
@@ -86,6 +89,10 @@ class Gonzales(Bot):
         ]
         self._distances = [v.length() for v in vectors]
 
+        if DRAW_FLAME:
+            self._flame = pygame.image.load(
+                os.path.dirname(__file__) + '/flame.png')
+
         if DEBUG:
             self._font = pygame.font.SysFont(None, 24)
             self._black = pygame.Color(0, 0, 0, 50)
@@ -145,6 +152,17 @@ class Gonzales(Bot):
         return angle / 3
 
     def draw(self, map_scaled, zoom):
+
+        if DRAW_FLAME:
+            flame_pos = self._last_position
+            flame_zoom = 0.1 * zoom
+            flame_angle = flame_pos.M.angle
+            flame_image = pygame.transform.rotozoom(
+                self._flame, -math.degrees(flame_angle) - 45, flame_zoom)
+            flame_rect = flame_image.get_rect(
+                center=(flame_pos.p - flame_pos.M * Vector2(40, 0)) * zoom)
+            map_scaled.blit(flame_image, flame_rect)
+
         if not DEBUG: return
 
         # VELOCITY VECTOR
@@ -184,6 +202,9 @@ class Gonzales(Bot):
 
         throttle = self._goFast(next_waypoint, position, velocity)
         steering = self._thatWay(next_waypoint, position, velocity)
+
+        if DRAW_FLAME:
+            self._last_position = position
 
         if DEBUG:
             self._last_wp = next_waypoint
