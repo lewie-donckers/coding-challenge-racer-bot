@@ -20,7 +20,7 @@ from ...linear_math import Transform
 
 DEBUG = False
 
-EFFECTIVE_DECELERATION = -120
+EFFECTIVE_DECELERATION = -122
 
 
 def normalizeAngle(angle):
@@ -104,12 +104,7 @@ class Gonzales(Bot):
         target = position.inverse() * target
         angle = target.as_polar()[1]
 
-        steering = 0
-        if abs(angle) > 1:
-            if angle > 0:
-                steering = 1
-            else:
-                steering = -1
+        steering = angle / 3
 
         if DEBUG:
             self.last_coordinates = position.p
