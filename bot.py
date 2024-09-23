@@ -10,10 +10,6 @@ import pygame
 from ...bot import Bot
 from ...linear_math import Transform
 
-# IDEAS
-# - more granular throttle
-# - better estimation of max speed
-
 # PHYSICS
 # - steering is 60% effective (rest is drifting)
 # - steering speed = 180 deg/sec
@@ -25,11 +21,11 @@ DEBUG = False
 DRAW_FLAME = True
 
 # TUNING PARAMETERS
-EFFECTIVE_DECELERATION = -118
-STEER_DISTANCE_LIMIT = 41
-STEER_ANGLE_LIMIT = 29
-SPEED_LIMIT_FACTOR = 125
-CORNER_CUT_FACTOR = 52  # percent
+EFFECTIVE_DECELERATION = -118  # pixels/sec2
+STEER_DISTANCE_LIMIT = 46  # pixels
+STEER_ANGLE_LIMIT = 42  # degrees
+SPEED_LIMIT_FACTOR = 130  # pixels/sec ratio
+CORNER_CUT_FACTOR = 51  # percent
 
 
 def normalizeAngle(angle):
@@ -144,7 +140,7 @@ class Gonzales(Bot):
         if (d < self._steer_distance_limit) and (abs(angle) <
                                                  self._steer_angle_limit):
             wp = self._incWP(wp)
-            target = posinverse * self._coordinates[self._incWP(wp)]
+            target = posinverse * self._coordinates[wp]
             angle = target.as_polar()[1]
 
         if DEBUG: self._last_steer_wp = wp
