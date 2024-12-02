@@ -5,6 +5,8 @@ subtitle: Brawn over brains
 
 ###
 
+<!-- generate with c:\temp\pandoc-3.5\pandoc -t revealjs -s -o index.html slides.md --include-in-header=style.html -V theme=night -V embedded=1 -->
+
 <img class="r-stretch" src="images/speedy.png" width=50% />
 
 ### Timeline
@@ -81,5 +83,18 @@ subtitle: Brawn over brains
 
 ### Brawn over brains
 
-TODO brute_force.py
+- maybe not the most sophistated bot
+- instead optimize parameters using `brute_force.py`
 
+### brute_force.py
+
+- provide range of values for each parameter
+- runs the bot in multiple races in parallel
+    - for each track
+    - for each cartesian product of the ranges
+- shows best parameter sets for each track
+- and parameter sets that improve the performance the most
+
+###
+
+<img src="images/brute_force.png" width=75%/>

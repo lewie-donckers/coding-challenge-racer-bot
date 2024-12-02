@@ -47,6 +47,7 @@
 
 <section id="section" class="slide level3">
 <h3></h3>
+<!-- generate with c:\temp\pandoc-3.5\pandoc -t revealjs -s -o index.html slides.md --include-in-header=style.html -V theme=night -V embedded=1 -->
 <p><img class="r-stretch" src="images/speedy.png" width=50% /></p>
 </section>
 <section id="timeline" class="slide level3">
@@ -153,7 +154,27 @@
 </section>
 <section id="brawn-over-brains" class="slide level3">
 <h3>Brawn over brains</h3>
-<p>TODO brute_force.py</p>
+<ul>
+<li>maybe not the most sophistated bot</li>
+<li>instead optimize parameters using <code>brute_force.py</code></li>
+</ul>
+</section>
+<section id="brute_force.py" class="slide level3">
+<h3>brute_force.py</h3>
+<ul>
+<li>provide range of values for each parameter</li>
+<li>runs the bot in multiple races in parallel
+<ul>
+<li>for each track</li>
+<li>for each cartesian product of the ranges</li>
+</ul></li>
+<li>shows best parameter sets for each track</li>
+<li>and parameter sets that improve the performance the most</li>
+</ul>
+</section>
+<section id="section-4" class="slide level3">
+<h3></h3>
+<p><img src="images/brute_force.png" width=75%/></p>
 </section>
     </div>
   </div>
