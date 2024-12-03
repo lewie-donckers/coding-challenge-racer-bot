@@ -83,8 +83,9 @@ subtitle: Brawn over brains
 
 ### Brawn over brains
 
-- maybe not the most sophistated bot
-- instead optimize parameters using `brute_force.py`
+- maybe not the best ideas
+- but make the best out of it
+    - optimize parameters using `brute_force.py`
 
 ### brute_force.py
 
